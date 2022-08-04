@@ -1,0 +1,488 @@
+package Compilador.Default.Compiler;
+
+import java_cup.runtime.Symbol;
+import java.util.Stack;
+import org.json.JSONObject;
+
+parser code
+{:
+    private Symbol simbolo;
+
+	private JSONObject resultadoJSON;
+	private JSONObject resultadoJSONTemporal;
+
+	private Stack identificadorDeInstrucciones = new Stack();
+	private Stack instruccionesParaLoop = new Stack();
+
+    public JSONObject getResultadoJSON() {
+        return resultadoJSON;
+    }
+
+    public void syntax_error(Symbol simbolo){
+        this.simbolo = simbolo;
+    }
+
+    public Symbol getSimbolo(){
+        return this.simbolo;
+	}
+:};
+
+terminal PROGRAMA;
+terminal PARENTESISABRE;
+terminal PARENTESISCIERRA;
+terminal LLAVEABRE;
+terminal LLAVECIERRA;
+terminal VARIABLE;
+terminal PUNTOYCOMA;
+terminal IDENTIFICADOR;
+terminal SEPARADOR;
+terminal OPERADORASIGNACION;
+terminal NUMERO;
+terminal OPERADORARITMETICOSUMA;
+terminal OPERADORARITMETICORESTA;
+terminal OPERADORARITMETICO;
+terminal AVANZAR;
+terminal ESPERA;
+terminal IZQUIERDA;
+terminal DERECHA;
+terminal TOMAR;
+terminal SOLTAR;
+terminal ELIMINAR;
+terminal DESACTIVARKABOOM;
+terminal PINTAR;
+terminal COLORES;
+terminal DEJAPINTAR;
+terminal IMPRIMIRVARIABLE;
+terminal IMPRIMIRCADENA;
+terminal CADENA;
+terminal OBJETODELANTE;
+terminal KABOOMDEFRENTE;
+terminal QUETENGODELANTE;
+terminal MURODELANTE;
+terminal TERMINARBLOQUE;
+terminal SI;
+terminal BOOLEANO;
+terminal OPERADORDECOMPARACION;
+terminal OPERADORLOGICO;
+terminal SINOSI;
+terminal SINO;
+terminal COMPARAR;
+terminal CASO;
+terminal FIN;
+terminal DOSPUNTOS;
+terminal DEFAULT;
+terminal PARA;
+terminal HACER;
+terminal REPITEHASTA;
+terminal REPITE;
+terminal OPERADORNEGACION;
+terminal ERROR;
+terminal RANDOM;
+
+
+non terminal Inicio;
+non terminal BloqueDeInstrucciones;
+non terminal InstruccionDeclaracionDeVariables;
+non terminal DeclaracionDeVariables;
+non terminal MultiplesDeclaraciones;
+non terminal AsignacionDeValoresAlDeclararVariable;
+non terminal OperacionAritmetica;
+non terminal OperacionSinParentesis;
+non terminal ContinuacionOperacionSinParentesis;
+non terminal OperadoresAritmeticos;
+non terminal InstruccionModificacionDeValorDeVariables;
+non terminal InstruccionAvanzar;
+non terminal ParametrosDeEntradaDeUnaInstruccion;
+non terminal InstruccionEspera;
+non terminal InstruccionGirarALaIzquierda;
+non terminal InstruccionGirarALaDerecha;
+non terminal InstruccionTomarObjeto;
+non terminal InstruccionSoltarObjeto;
+non terminal InstruccionEliminarObjeto;
+non terminal InstruccionDesactivarKaboom;
+non terminal InstruccionPintarSuelo;
+non terminal PaletaDeColores;
+non terminal InstruccionDejarDePintarSuelo;
+non terminal InstruccionImprimirVariables;
+non terminal InstruccionImprimirCadenas;
+non terminal Cadenas;
+non terminal ContinuacionDeCadenas;
+non terminal InstruccionTengoObjetoDelante;
+non terminal InstruccionTengoBombaDelante;
+non terminal InstruccionQueTengoDelanteDeMi;
+non terminal TengoMuroDelanteDeMi;
+non terminal InstruccionTerminarBloque;
+non terminal LlamadaAFuncion;
+non terminal Parametros;
+non terminal ParametrosContinuacion;
+non terminal EstrucutraDeControlIf;
+non terminal Condicion;
+non terminal CondicionDeComparacionSimple;
+non terminal CondicionDeComparacionSimpleContinuacion;
+non terminal CondicionDeComparacionConParentesis;
+non terminal CondicionLogica;
+non terminal EstrucutraDeControlIfElse;
+non terminal EstrucutraDeControlElse;
+non terminal EstrucutraDeControlCase;
+non terminal Casos;
+non terminal CasoDefault;
+non terminal EstrucutraDeControlFor;
+non terminal DeclaracionesParaFor;
+non terminal DeclaracionesParaForContinuacion;
+non terminal InstruccionesParaFor;
+non terminal InstruccionesParaForContinuacion;
+non terminal EstrucutraDeControlDoWhile;
+non terminal EstrucutraDeControlWhile;
+non terminal Funciones;
+non terminal ParametrosDeEntrada;
+non terminal MasParametrosDeEntrada;
+non terminal OperadorNegacion;
+non terminal OperacionConParentesis;
+non terminal continuaOperacion;
+non terminal NumeroAleatorio;
+non terminal CondicionParaCasos;
+non terminal OperadorDeComparacionOpcional;
+non terminal InstruccionesCasos;
+
+
+start with Inicio;
+
+Inicio::=
+	PROGRAMA PARENTESISABRE PARENTESISCIERRA LLAVEABRE BloqueDeInstrucciones  LLAVECIERRA Funciones
+;
+
+BloqueDeInstrucciones::=
+	InstruccionDeclaracionDeVariables BloqueDeInstrucciones
+	| InstruccionModificacionDeValorDeVariables BloqueDeInstrucciones
+	| InstruccionAvanzar BloqueDeInstrucciones
+	| InstruccionEspera BloqueDeInstrucciones
+	| InstruccionGirarALaIzquierda BloqueDeInstrucciones
+	| InstruccionGirarALaDerecha BloqueDeInstrucciones
+	| InstruccionTomarObjeto BloqueDeInstrucciones
+	| InstruccionSoltarObjeto BloqueDeInstrucciones
+	| InstruccionEliminarObjeto BloqueDeInstrucciones
+	| InstruccionDesactivarKaboom BloqueDeInstrucciones
+	| InstruccionPintarSuelo BloqueDeInstrucciones
+	| InstruccionDejarDePintarSuelo BloqueDeInstrucciones
+	| InstruccionImprimirVariables BloqueDeInstrucciones
+	| InstruccionImprimirCadenas BloqueDeInstrucciones
+	| InstruccionTengoObjetoDelante BloqueDeInstrucciones
+	| InstruccionTengoBombaDelante BloqueDeInstrucciones
+	| InstruccionQueTengoDelanteDeMi BloqueDeInstrucciones
+	| TengoMuroDelanteDeMi BloqueDeInstrucciones
+	| InstruccionTerminarBloque BloqueDeInstrucciones
+	| EstrucutraDeControlIf BloqueDeInstrucciones
+	| EstrucutraDeControlCase BloqueDeInstrucciones
+	| EstrucutraDeControlFor BloqueDeInstrucciones
+	| EstrucutraDeControlDoWhile BloqueDeInstrucciones
+	| EstrucutraDeControlWhile BloqueDeInstrucciones
+	| LlamadaAFuncion BloqueDeInstrucciones
+	| /* Epsilon: Sin Bloque de Instrucciones */
+;
+
+InstruccionDeclaracionDeVariables::=
+	VARIABLE DeclaracionDeVariables PUNTOYCOMA
+;
+
+DeclaracionDeVariables::=
+	IDENTIFICADOR
+	| IDENTIFICADOR AsignacionDeValoresAlDeclararVariable
+	| IDENTIFICADOR MultiplesDeclaraciones
+;
+
+MultiplesDeclaraciones::=
+	SEPARADOR IDENTIFICADOR MultiplesDeclaraciones
+	| SEPARADOR IDENTIFICADOR AsignacionDeValoresAlDeclararVariable MultiplesDeclaraciones
+	| SEPARADOR IDENTIFICADOR AsignacionDeValoresAlDeclararVariable
+	| SEPARADOR IDENTIFICADOR
+;
+
+AsignacionDeValoresAlDeclararVariable::=
+	OPERADORASIGNACION NUMERO
+	| OPERADORASIGNACION IDENTIFICADOR
+	| OPERADORASIGNACION NumeroAleatorio
+	| OPERADORASIGNACION OperacionAritmetica
+;
+
+OperacionAritmetica::=
+	OperacionSinParentesis
+	| OperacionConParentesis
+;
+
+OperacionConParentesis::=
+    PARENTESISABRE OperacionAritmetica PARENTESISCIERRA continuaOperacion
+;
+
+continuaOperacion::=
+    ContinuacionOperacionSinParentesis
+    | /* No continua nada después de un paréntesis que cierra */
+;
+
+OperacionSinParentesis::=
+	IDENTIFICADOR ContinuacionOperacionSinParentesis
+	| NUMERO ContinuacionOperacionSinParentesis
+	| NumeroAleatorio ContinuacionOperacionSinParentesis
+;
+
+ContinuacionOperacionSinParentesis::=
+	OperadoresAritmeticos IDENTIFICADOR ContinuacionOperacionSinParentesis
+	| OperadoresAritmeticos NUMERO ContinuacionOperacionSinParentesis
+	| OperadoresAritmeticos NumeroAleatorio ContinuacionOperacionSinParentesis
+	| OperadoresAritmeticos OperacionConParentesis
+	| OperadoresAritmeticos IDENTIFICADOR
+	| OperadoresAritmeticos NUMERO
+	| OperadoresAritmeticos NumeroAleatorio
+;
+
+OperadoresAritmeticos::=
+	OPERADORARITMETICO
+	| OPERADORARITMETICOSUMA
+	| OPERADORARITMETICORESTA
+;
+
+InstruccionModificacionDeValorDeVariables::=
+	IDENTIFICADOR AsignacionDeValoresAlDeclararVariable PUNTOYCOMA
+;
+
+InstruccionAvanzar::=
+	AVANZAR PARENTESISABRE ParametrosDeEntradaDeUnaInstruccion PARENTESISCIERRA PUNTOYCOMA
+;
+
+NumeroAleatorio::=
+    RANDOM PARENTESISABRE NUMERO SEPARADOR NUMERO PARENTESISCIERRA
+    | RANDOM PARENTESISABRE PARENTESISCIERRA
+;
+
+ParametrosDeEntradaDeUnaInstruccion::=
+	IDENTIFICADOR
+	| NUMERO
+	| NumeroAleatorio
+	| OperacionAritmetica
+	| /* Los parámetros de entrada pueden ir vacíos */
+;
+
+InstruccionEspera::=
+	ESPERA PARENTESISABRE ParametrosDeEntradaDeUnaInstruccion PARENTESISCIERRA PUNTOYCOMA
+;
+
+InstruccionGirarALaIzquierda::=
+	IZQUIERDA PARENTESISABRE ParametrosDeEntradaDeUnaInstruccion PARENTESISCIERRA PUNTOYCOMA
+;
+
+InstruccionGirarALaDerecha::=
+	DERECHA PARENTESISABRE ParametrosDeEntradaDeUnaInstruccion PARENTESISCIERRA PUNTOYCOMA
+;
+
+InstruccionTomarObjeto::=
+	TOMAR PARENTESISABRE PARENTESISCIERRA PUNTOYCOMA
+;
+
+InstruccionSoltarObjeto::=
+	SOLTAR PARENTESISABRE PARENTESISCIERRA PUNTOYCOMA
+;
+
+InstruccionEliminarObjeto::=
+	ELIMINAR PARENTESISABRE PARENTESISCIERRA PUNTOYCOMA
+;
+
+InstruccionDesactivarKaboom::=
+	DESACTIVARKABOOM PARENTESISABRE PARENTESISCIERRA PUNTOYCOMA
+;
+
+InstruccionPintarSuelo::=
+	PINTAR PARENTESISABRE PaletaDeColores PARENTESISCIERRA PUNTOYCOMA
+;
+
+PaletaDeColores::=
+	COLORES
+	| /* Color predeterminado - No hay entrada de algún color. */
+;
+
+InstruccionDejarDePintarSuelo::=
+	DEJAPINTAR PARENTESISABRE PARENTESISCIERRA PUNTOYCOMA
+;
+
+InstruccionImprimirVariables::=
+	IMPRIMIRVARIABLE PARENTESISABRE IDENTIFICADOR PARENTESISCIERRA PUNTOYCOMA
+;
+
+InstruccionImprimirCadenas::=
+	IMPRIMIRCADENA PARENTESISABRE Cadenas PARENTESISCIERRA PUNTOYCOMA
+;
+
+Cadenas::=
+	IDENTIFICADOR ContinuacionDeCadenas
+	| CADENA ContinuacionDeCadenas
+;
+
+ContinuacionDeCadenas::=
+	OPERADORARITMETICOSUMA IDENTIFICADOR ContinuacionDeCadenas
+	| OPERADORARITMETICOSUMA CADENA ContinuacionDeCadenas
+	| /* Ningúna cadena más */
+;
+
+InstruccionTengoObjetoDelante::=
+	OBJETODELANTE PARENTESISABRE PARENTESISCIERRA PUNTOYCOMA
+;
+
+InstruccionTengoBombaDelante::=
+	KABOOMDEFRENTE PARENTESISABRE PARENTESISCIERRA PUNTOYCOMA
+;
+
+InstruccionQueTengoDelanteDeMi::=
+	QUETENGODELANTE PARENTESISABRE PARENTESISCIERRA PUNTOYCOMA
+;
+
+TengoMuroDelanteDeMi::=
+	MURODELANTE PARENTESISABRE PARENTESISCIERRA PUNTOYCOMA
+;
+
+InstruccionTerminarBloque::=
+	TERMINARBLOQUE PARENTESISABRE PARENTESISCIERRA PUNTOYCOMA
+;
+
+LlamadaAFuncion::=
+	IDENTIFICADOR PARENTESISABRE Parametros PARENTESISCIERRA PUNTOYCOMA
+;
+
+Parametros::=
+	NUMERO ParametrosContinuacion
+	| IDENTIFICADOR ParametrosContinuacion
+	| NumeroAleatorio ParametrosContinuacion
+	| OperacionAritmetica ParametrosContinuacion
+	| /* Puede no llevar identificadores */
+;
+
+ParametrosContinuacion::=
+	SEPARADOR NUMERO ParametrosContinuacion
+	| SEPARADOR IDENTIFICADOR ParametrosContinuacion
+	| SEPARADOR NumeroAleatorio ParametrosContinuacion
+	| SEPARADOR OperacionAritmetica ParametrosContinuacion
+    | /* No envía más parámetros */
+;
+
+EstrucutraDeControlIf::=
+	SI PARENTESISABRE Condicion PARENTESISCIERRA LLAVEABRE BloqueDeInstrucciones LLAVECIERRA EstrucutraDeControlIfElse
+;
+
+Condicion::=
+	CondicionDeComparacionSimple
+	| CondicionLogica
+	| CondicionDeComparacionConParentesis
+;
+
+CondicionDeComparacionSimple::=
+	IDENTIFICADOR CondicionDeComparacionSimpleContinuacion
+	| NUMERO CondicionDeComparacionSimpleContinuacion
+	| NumeroAleatorio CondicionDeComparacionSimpleContinuacion
+	| BOOLEANO
+;
+
+CondicionDeComparacionSimpleContinuacion::=
+	OPERADORDECOMPARACION IDENTIFICADOR
+	| OPERADORDECOMPARACION NUMERO
+	| OPERADORDECOMPARACION NumeroAleatorio
+;
+
+CondicionDeComparacionConParentesis::=
+	OperadorNegacion PARENTESISABRE CondicionDeComparacionSimple PARENTESISCIERRA
+;
+
+CondicionLogica::=
+	CondicionDeComparacionConParentesis OPERADORLOGICO CondicionDeComparacionConParentesis
+;
+
+EstrucutraDeControlIfElse::=
+	SINOSI PARENTESISABRE Condicion PARENTESISCIERRA LLAVEABRE BloqueDeInstrucciones LLAVECIERRA EstrucutraDeControlIfElse
+	| EstrucutraDeControlElse
+;
+
+EstrucutraDeControlElse::=
+	SINO LLAVEABRE BloqueDeInstrucciones LLAVECIERRA
+	| /* NO lleva nada*/
+;
+
+EstrucutraDeControlCase::=
+	COMPARAR PARENTESISABRE IDENTIFICADOR PARENTESISCIERRA LLAVEABRE Casos CasoDefault LLAVECIERRA
+;
+
+Casos::=
+	CASO CondicionParaCasos DOSPUNTOS InstruccionesCasos
+	| /* Sin más casos */
+;
+
+InstruccionesCasos::=
+    BloqueDeInstrucciones FIN PUNTOYCOMA Casos
+    | BloqueDeInstrucciones Casos
+;
+
+CondicionParaCasos::=
+    OperadorDeComparacionOpcional NUMERO
+    | OperadorDeComparacionOpcional NumeroAleatorio
+;
+
+OperadorDeComparacionOpcional::=
+    OPERADORDECOMPARACION
+    | /* No hay Operador de Comparación */
+;
+
+CasoDefault::=
+	DEFAULT DOSPUNTOS BloqueDeInstrucciones FIN PUNTOYCOMA
+	| DEFAULT DOSPUNTOS BloqueDeInstrucciones
+;
+
+EstrucutraDeControlFor::=
+	PARA PARENTESISABRE DeclaracionesParaFor PUNTOYCOMA Condicion PUNTOYCOMA InstruccionesParaFor PARENTESISCIERRA LLAVEABRE BloqueDeInstrucciones LLAVECIERRA
+;
+
+DeclaracionesParaFor::=
+	IDENTIFICADOR AsignacionDeValoresAlDeclararVariable DeclaracionesParaForContinuacion
+	| VARIABLE IDENTIFICADOR AsignacionDeValoresAlDeclararVariable DeclaracionesParaForContinuacion
+	| /* Puede ir nada */
+;
+
+DeclaracionesParaForContinuacion::=
+	SEPARADOR IDENTIFICADOR AsignacionDeValoresAlDeclararVariable DeclaracionesParaForContinuacion
+	| SEPARADOR VARIABLE IDENTIFICADOR AsignacionDeValoresAlDeclararVariable DeclaracionesParaForContinuacion
+	| /* Ninguna otra declaración  */
+;
+
+InstruccionesParaFor::=
+	IDENTIFICADOR OPERADORARITMETICOSUMA OPERADORARITMETICOSUMA InstruccionesParaForContinuacion
+	| IDENTIFICADOR OPERADORARITMETICORESTA OPERADORARITMETICORESTA InstruccionesParaForContinuacion
+	| /* Puede Ir nada */
+;
+
+InstruccionesParaForContinuacion::=
+	SEPARADOR IDENTIFICADOR OPERADORARITMETICOSUMA OPERADORARITMETICOSUMA InstruccionesParaForContinuacion
+	| SEPARADOR IDENTIFICADOR OPERADORARITMETICORESTA OPERADORARITMETICORESTA InstruccionesParaForContinuacion
+	| /* Ninguna Otra Operacion */
+;
+
+EstrucutraDeControlDoWhile::=
+	HACER LLAVEABRE BloqueDeInstrucciones LLAVECIERRA REPITE PARENTESISABRE Condicion PARENTESISCIERRA PUNTOYCOMA
+;
+
+EstrucutraDeControlWhile::=
+	REPITEHASTA PARENTESISABRE Condicion PARENTESISCIERRA LLAVEABRE BloqueDeInstrucciones LLAVECIERRA
+;
+
+Funciones::=
+	IDENTIFICADOR PARENTESISABRE ParametrosDeEntrada PARENTESISCIERRA LLAVEABRE BloqueDeInstrucciones LLAVECIERRA Funciones
+	| /* No hay funciones */
+;
+
+ParametrosDeEntrada::=
+	VARIABLE IDENTIFICADOR MasParametrosDeEntrada
+	| /* Sin parametros de entrada */
+;
+
+MasParametrosDeEntrada::=
+	SEPARADOR VARIABLE IDENTIFICADOR MasParametrosDeEntrada
+	| /* No más parámetros */
+;
+
+OperadorNegacion::=
+	OPERADORNEGACION
+	| /* No hay Operador*/
+;
